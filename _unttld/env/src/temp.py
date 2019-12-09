@@ -4,26 +4,36 @@ import random
 # Reading credentials from kaggle.json is chosen
 # as an authentication mechanism.
 # Read more on https://github.com/Kaggle/kaggle-api
-try:
-    api = KaggleApi()
-    api.authenticate()
-except OSError as o:
-    print(o.args[0])
 
-MAX_SIZE = 512*1024*1024
-VALID_DATASET_TYPES = ['csv', 'json', 'sqlite']
+class KaggleExport():
 
-'''
-def valid_files(files, valid_types):
-    for file in files, type in valid_types:
-        if type 
-'''
-pg = random.randint(1, 2)
-ix = random.randint(1, 19)
-file_type = VALID_DATASET_TYPES[random.randint(0, 2)]
+    MAX_SIZE = 512*1024*1024
+    VALID_DATASET_TYPES = ['csv', 'json', 'sqlite']
 
-dataset_suff = str(api.dataset_list(file_type=file_type, page=pg, max_size=MAX_SIZE)[ix])
-print(dataset_suff)
+    def __init__(self):
+        try:
+            api = KaggleApi()
+            api.authenticate()
+        except OSError as o:
+            print(o.args[0])
 
-print(api.dataset_list_files(dataset_suff))
-#api.dataset_download_files(dataset=dataset_suff, path=r'..\src\test', unzip=True)
+    def set_dataset(self, dataset=None, file_type=None):
+        if not dataset:
+            self.page = random.randint(1, 2)
+            self.index = random.randint(1, 19)
+
+            if file_type:
+                self.file_type = file_type
+            else:
+                self.file_type = VALID_DATASET_TYPES[random.randint(0, 2)]
+        else:
+            self.datset_suff = dataset
+
+
+    #dataset_suff = str(api.dataset_list(file_type=self.file_type, page=self.page, max_size=MAX_SIZE)[self.index])
+
+    #a = api.dataset_list_files(dataset_suff).files
+
+    #dir_dataset = '..\src\datasets\\' + dataset_suff
+
+    #api.dataset_download_files(dataset=dataset_suff, path=dir_dataset, unzip=True)

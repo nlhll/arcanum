@@ -1,5 +1,8 @@
-def validate_file_extension(files):
-    for f in files:
-        if str(f).split('.')[-1] not in VALID_DATASET_TYPES:
-            return False
-    return True
+from kaggle.api.kaggle_api_extended import KaggleApi
+
+api = KaggleApi()
+api.authenticate()
+
+print(api.dataset_list(search='sobhanmoosavi/us-accidents').)
+
+#print(api.dataset_list_files('sobhanmoosavi/us-accidents').)

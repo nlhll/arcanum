@@ -3,7 +3,7 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 import random
 
 
-class KaggleExport:
+class KaggleExtract:
     # Kaggle exporter class based on official Kaggle API
     MAX_DATASET_SIZE = 150*1024*1024
     VALID_DATASET_TYPES = ['csv', 'json', 'sqlite']
@@ -78,5 +78,5 @@ if not dataset:
                       '(Note: there might be files '
                       'with other types in the dataset): ')
 
-exp = KaggleExport(dataset_suff=dataset, file_type=file_type)
+exp = KaggleExtract(dataset_suff=dataset, file_type=file_type)
 exp.download_dataset()

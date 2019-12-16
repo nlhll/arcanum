@@ -1,6 +1,7 @@
 from kaggle.api.kaggle_api_extended import KaggleApi
 # import os
 import random
+import shutil
 
 
 class KaggleExtract:
@@ -42,6 +43,9 @@ class KaggleExtract:
                                                  )[index]
                                     )
 
+    def __del__(self):
+
+
     def authenticate(self):
         # Reading credentials from kaggle.json is chosen
         # as an authentication mechanism.
@@ -71,12 +75,13 @@ class KaggleExtract:
             unzip=True)
 
 
-dataset = input('Input dataset suffix '
-                '(Dataset URL suffix in format <owner>/<dataset-name>): ')
-if not dataset:
-    file_type = input('Input primal files\' type: csv, json, sqlite. '
-                      '(Note: there might be files '
-                      'with other types in the dataset): ')
+if __name__ == '__main__':
+    dataset = input('Input dataset suffix '
+                    '(Dataset URL suffix in format <owner>/<dataset-name>): ')
+    if not dataset:
+        file_type = input('Input primal files\' type: csv, json, sqlite. '
+                          '(Note: there might be files '
+                          'with other types in the dataset): ')
 
-exp = KaggleExtract(dataset_suff=dataset, file_type=file_type)
-exp.download_dataset()
+    exp = KaggleExtract(dataset_suff=dataset, file_type=file_type)
+    exp.download_dataset()

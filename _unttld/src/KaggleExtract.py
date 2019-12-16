@@ -6,7 +6,7 @@ import random
 class KaggleExtract:
     # Kaggle exporter class based on official Kaggle API
     MAX_DATASET_SIZE = 150*1024*1024
-    VALID_DATASET_TYPES = ['csv', 'json', 'sqlite']
+    VALID_FILE_TYPES = ['csv', 'json', 'sqlite']
     DOWNLOAD_DIR = '..\\dataset'
     # os.path.abspath(os.curdir) + '\\datasets'
 
@@ -33,7 +33,7 @@ class KaggleExtract:
                 self.validate_file_type(file_type)
                 self.file_type = file_type
             else:
-                self.file_type = self.VALID_DATASET_TYPES[random.randint(0, 2)]
+                self.file_type = self.VALID_FILE_TYPES[random.randint(0, 2)]
 
             self.dataset_suff = str(self.api.
                                     dataset_list(file_type=self.file_type,
@@ -53,7 +53,7 @@ class KaggleExtract:
             print(o.args[0])
 
     def validate_file_type(self, file_type):
-        if file_type not in self.VALID_DATASET_TYPES:
+        if file_type not in self.VALID_FILE_TYPES:
             raise ValueError('Incorrect file type has been entered.')
 
     def validate_dataset_exist(self, dataset_suff):

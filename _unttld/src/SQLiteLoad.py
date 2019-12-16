@@ -42,7 +42,7 @@ class SQLiteLoad:
 
     def load_wrapper(self):
         for file in self.files_to_load:
-            if 
+            if
             self.load_csv(file['file_name'])
 
 ld = SQLiteLoad()

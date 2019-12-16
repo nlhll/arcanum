@@ -10,7 +10,10 @@ if not dataset:
                       'with other types inthe dataset): ')
 '''
 
-# extractor = KaggleExtract()
-# extractor.download_dataset()
-# loader = SQLiteLoad()
-# loader.load_wrapper()
+extractor = KaggleExtract()
+extractor.download_dataset()
+loader = SQLiteLoad()
+loader.load_wrapper()
+
+extractor.delete_download_dir()
+loader.delete_db_dir()

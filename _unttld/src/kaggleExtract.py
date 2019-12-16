@@ -1,7 +1,7 @@
 from kaggle.api.kaggle_api_extended import KaggleApi
 # import os
 import random
-import shutil
+import send2trash
 
 
 class KaggleExtract:
@@ -9,7 +9,7 @@ class KaggleExtract:
     MAX_DATASET_SIZE = 150*1024*1024
     VALID_FILE_TYPES = ['csv', 'json', 'sqlite']
     DOWNLOAD_DIR = '..\\dataset'
-    # os.path.abspath(os.curdir) + '\\datasets'
+    # os.path.abspath(os.curdir) + '\\dataset'
 
     def __init__(self,
                  max__dataset_size=MAX_DATASET_SIZE,
@@ -53,6 +53,17 @@ class KaggleExtract:
         except OSError as o:
             print(o.args[0])
 
+    def delete_download_dir(self):
+        send2trash.send2trash(self.download_dir)
+
+    def download_dataset(self):
+        # Download dataset from kaggle's vault
+        # print(api.dataset_list_files('sobhanmoosavi/us-accidents').files)
+        self.api.dataset_download_files(
+            dataset=self.dataset_suff,
+            path=self.download_dir,
+            unzip=True)
+
     def validate_file_type(self, file_type):
         if file_type not in self.VALID_FILE_TYPES:
             raise ValueError('Incorrect file type has been entered.')
@@ -62,14 +73,6 @@ class KaggleExtract:
 
         if search_res != '[' + dataset_suff + ']':
             raise ValueError('Incorrect dataset suffix has been entered.')
-
-    def download_dataset(self):
-        # Download dataset from kaggle's vault
-        # print(api.dataset_list_files('sobhanmoosavi/us-accidents').files)
-        self.api.dataset_download_files(
-            dataset=self.dataset_suff,
-            path=self.download_dir,
-            unzip=True)
 
 
 if __name__ == '__main__':

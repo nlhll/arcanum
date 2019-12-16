@@ -1,6 +1,7 @@
 import json
 import os
 import pandas
+import send2trash
 import sqlite3
 
 
@@ -49,11 +50,22 @@ class SQLiteLoad:
                 }
             )
 
+    def delete_db_dir(self):
+        if self.conn:
+            self.conn.close()
+        send2trash.send2trash(self.db_dir)
+
     def load_csv(self, file):
         # .csv loader
         table_name = file['file_name']
-        csv_conn = pandas.read_csv(file['file_path'])
-        csv_conn.to_sql(table_name, self.conn, if_exists='append', index=False)
+
+        try:
+            csv_conn = pandas.read_csv(file['file_path'])
+            csv_conn.to_sql(table_name, self.conn, if_exists='append', index=False)
+        except pandas:
+            print('The file {} is corrupted. the loading is skipped.'.format(file['file_name']))
+        else:
+            print('The file {} has been loaded.'.format(file['file_name'] + file['file_ext']))
 
     def load_json(self, file):
         # .json loader

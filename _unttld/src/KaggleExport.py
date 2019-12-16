@@ -7,7 +7,7 @@ class KaggleExport:
     # Kaggle exporter class based on official Kaggle API
     MAX_DATASET_SIZE = 150*1024*1024
     VALID_DATASET_TYPES = ['csv', 'json', 'sqlite']
-    DOWNLOAD_DIR = '..\\datasets'
+    DOWNLOAD_DIR = '..\\dataset'
     # os.path.abspath(os.curdir) + '\\datasets'
 
     def __init__(self,
@@ -78,5 +78,5 @@ if not dataset:
                       '(Note: there might be files '
                       'with other types in the dataset): ')
 
-exp = KaggleExport(dataset_suff=dataset)
+exp = KaggleExport(dataset_suff=dataset, file_type=file_type)
 exp.download_dataset()

@@ -1,8 +1,17 @@
-from kaggle.api.kaggle_api_extended import KaggleApi
+import os
+import pandas
+import sqlite3
 
-api = KaggleApi()
-api.authenticate()
+DB_PATH = '../database'
+FILE_PATH = 'D:/work/arcanum/_unttld/dataset//ISO_TC213.csv'
 
-print(api.dataset_list(search='sobhanmoosavi/us-accidents').)
+table_name = FILE_PATH.split('/')[-1].replace('.csv', '')
+try:
+    os.mkdir(DB_PATH)
+except OSError:
+    pass
 
-#print(api.dataset_list_files('sobhanmoosavi/us-accidents').)
+conn = sqlite3.connect(DB_PATH + '//db.db')
+
+df = pandas.read_csv(FILE_PATH)
+df.to_sql(table_name, conn, if_exists='append', index=False)

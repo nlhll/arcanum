@@ -2,17 +2,21 @@ import os
 import pandas
 import sqlite3
 
+
 class SQLiteLoad:
     # Loader into SQLite db
     DB_DIR = '..\\database'
     DATASET_DIR = '..\\dataset'
     DB_NAME = 'db'
+
     # FILE_PATH = 'D:/work/arcanum/_unttld/dataset/ISO_TC 213.csv'
 
     def __init__(self,
                  dataset_dir=DATASET_DIR,
                  db_dir=DB_DIR,
                  db_name=DB_NAME):
+
+        self.load_call = {'.csv': self.load_csv}
 
         self.dataset_dir = dataset_dir
 
@@ -36,15 +40,21 @@ class SQLiteLoad:
             )
 
     def load_csv(self, file_name):
+        # .csv loader
         table_name = file_name.split('\\')[-1]
-        csv_conn = pandas.read_csv(self.dataset_dir + '\\' + file_name + '.csv')
+        csv_conn = pandas.read_csv(self.dataset_dir + '\\'
+                                   + file_name + '.csv')
         csv_conn.to_sql(table_name, self.conn, if_exists='append', index=False)
 
     def load_wrapper(self):
+        # Wrapps loads from different files types
         for file in self.files_to_load:
-            if
-            self.load_csv(file['file_name'])
+            try:
+                self.load_call[file['file_ext']](file['file_name'])
+            except KeyError:
+                print('The file with {} extension was skipped'
+                      .format(file['file_ext']))
+
 
 ld = SQLiteLoad()
 ld.load_wrapper()
-

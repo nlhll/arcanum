@@ -3,6 +3,9 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 import random
 import send2trash
 
+# TODO: logging (console, file)
+# TODO: add subdirectory per dataset extracted
+# TODO: docstrings
 
 class KaggleExtract:
     # Kaggle exporter class based on official Kaggle API
@@ -12,7 +15,6 @@ class KaggleExtract:
     # os.path.abspath(os.curdir) + '\\dataset'
 
     def __init__(self,
-                 max__dataset_size=MAX_DATASET_SIZE,
                  dataset_suff=None,
                  file_type=None,
                  download_dir=DOWNLOAD_DIR
@@ -27,6 +29,7 @@ class KaggleExtract:
             self.validate_dataset_exist(dataset_suff)
             self.dataset_suff = dataset_suff
         else:
+            # TODO: move to separate method(s)
             page = random.randint(1, 2)
             index = random.randint(1, 19)
 

@@ -4,6 +4,11 @@ import pandas
 import send2trash
 import sqlite3
 
+# TODO: logging (console, file)
+# TODO: decouple logic from Extract (dataset dir, etc.)
+# TODO: json loader
+# TODO: docstrings
+# TODO: remove db connection from __init__ 
 
 class SQLiteLoad:
     # Loader into SQLite db
@@ -36,7 +41,7 @@ class SQLiteLoad:
 
         # get all files path's
         files = []
-        for (dirpath, dirnames, filenames) in os.walk(self.dataset_dir):
+        for (dirpath, dirnames, filenames) in os.walk(self.dataset_dir): # TODO: rewrite with pathlib (should become simpler)
             files += [os.path.join(dirpath, file) for file in filenames]
 
         # prepare a dictionary with files' metadata
@@ -74,7 +79,7 @@ class SQLiteLoad:
                   .format(file['file_name'] + file['file_ext']))
             print('========================================'
                   '========================================')
-
+        
     def load_json(self, file):
         # .json loader
         pass
@@ -134,7 +139,7 @@ class SQLiteLoad:
                 print('========================================'
                       '========================================')
 
-        self.db_conn.close()
+        self.db_conn.close() # TODO: remove after refactoring
 
 
 if __name__ == '__main__':

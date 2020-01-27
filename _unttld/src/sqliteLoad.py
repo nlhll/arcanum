@@ -47,12 +47,12 @@ class SQLiteLoad:
         # prepare a dictionary with files' metadata
         self.files_to_load = []
         for file in files:
-            file_name, file_ext = os.path.splitext(file)
+            file_name, file_type = os.path.splitext(file)
             self.files_to_load.append(
                 {
                     'file_path': file,
                     'file_name': file_name.split('\\')[-1],
-                    'file_ext': file_ext
+                    'file_type': file_type
                 }
             )
 
@@ -76,7 +76,7 @@ class SQLiteLoad:
                   '========================================')
         else:
             print('The file {} has been loaded.'
-                  .format(file['file_name'] + file['file_ext']))
+                  .format(file['file_name'] + file['file_type']))
             print('========================================'
                   '========================================')
         
@@ -117,7 +117,7 @@ class SQLiteLoad:
                   '========================================')
         else:
             print('The file {} has been loaded.'
-                  .format(file['file_name'] + file['file_ext']))
+                  .format(file['file_name'] + file['file_type']))
             print('========================================'
                   '========================================')
 
@@ -129,13 +129,13 @@ class SQLiteLoad:
         for file in self.files_to_load:
             try:
                 print('The file\'s {} loading has started.'
-                      .format(file['file_name'] + file['file_ext']))
+                      .format(file['file_name'] + file['file_type']))
                 print('========================================'
                       '========================================')
-                self.load_call[file['file_ext']](file)
+                self.load_call[file['file_type']](file)
             except KeyError:
                 print('The file with {} extension has been skipped'
-                      .format(file['file_ext']))
+                      .format(file['file_type']))
                 print('========================================'
                       '========================================')
 

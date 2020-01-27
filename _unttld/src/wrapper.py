@@ -2,6 +2,7 @@ from kaggleExtract import KaggleExtract
 from sqliteLoad import SQLiteLoad
 # TODO: argparse or click command-line args (full-functional console interface
 
+DOWNLOAD_DIR = '..\\dataset'
 dataset = input('Input dataset suffix '
                 '(Dataset URL suffix in format <owner>/<dataset-name>): ')
 if not dataset:

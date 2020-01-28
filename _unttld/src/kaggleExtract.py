@@ -15,9 +15,9 @@ class KaggleExtract:
     # os.path.abspath(os.curdir) + '\\dataset'
 
     def __init__(self,
+                 download_dir,
                  dataset_name=None,
-                 file_type=None,
-                 download_dir=DOWNLOAD_DIR
+                 file_type=None
                  ):
         """Constructor.
 

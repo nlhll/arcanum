@@ -8,7 +8,8 @@ import sqlite3
 # TODO: decouple logic from Extract (dataset dir, etc.)
 # TODO: json loader
 # TODO: docstrings
-# TODO: remove db connection from __init__ 
+# TODO: remove db connection from __init__
+
 
 class SQLiteLoad:
     # Loader into SQLite db
@@ -19,14 +20,18 @@ class SQLiteLoad:
     # FILE_PATH = 'D:/work/arcanum/_unttld/dataset/ISO_TC 213.csv'
 
     def __init__(self,
-                 dataset_dir=DATASET_DIR,
-                 db_dir=DB_DIR,
+                 dataset_dir,
+                 db_dir,
                  db_name=DB_NAME):
+        """Constructor.
 
+        Dataset and db directories initializtion.
+        List of files to load setting.
+        """
         # initialize list of loads
         self.load_call = {
             '.csv': self.load_csv,
-            # '.json': self.load_json
+            '.json': self.load_json,
             '.sqlite': self.load_sqlite
         }
 
@@ -37,11 +42,11 @@ class SQLiteLoad:
             os.mkdir(self.db_dir)
         except OSError:
             pass
-        self.db_conn = sqlite3.connect(db_dir + '\\' + db_name + '.db')
 
         # get all files path's
         files = []
-        for (dirpath, dirnames, filenames) in os.walk(self.dataset_dir): # TODO: rewrite with pathlib (should become simpler)
+        # TODO: rewrite with pathlib (should become simpler)
+        for (dirpath, dirnames, filenames) in os.walk(self.dataset_dir):
             files += [os.path.join(dirpath, file) for file in filenames]
 
         # prepare a dictionary with files' metadata
@@ -57,12 +62,13 @@ class SQLiteLoad:
             )
 
     def delete_db_dir(self):
+        """Deletion of the db directory."""
         if self.db_conn:
             self.db_conn.close()
         send2trash.send2trash(self.db_dir)
 
     def load_csv(self, file):
-        # .csv loader
+        """ .csv loader"""
         table_name = file['file_name']
 
         try:
@@ -79,13 +85,14 @@ class SQLiteLoad:
                   .format(file['file_name'] + file['file_type']))
             print('========================================'
                   '========================================')
-        
+
     def load_json(self, file):
-        # .json loader
+        """ .json loader"""
         pass
 
     def load_sqlite(self, file):
-        # .sqlite loader
+        """ .sqlite loader"""
+        db_conn = sqlite3.connect(self.db_dir + '\\' + self.db_name + '.db')
         conn = sqlite3.connect(file['file_path'])
         cursor = conn.cursor()
         table_name = file['file_name']
@@ -99,7 +106,7 @@ class SQLiteLoad:
                     table_name = tab_meta[0]
                     table = pandas.read_sql_query("SELECT * from %s"
                                                   % table_name, conn)
-                    table.to_sql(table_name, self.db_conn,
+                    table.to_sql(table_name, db_conn,
                                  if_exists='replace', index=False)
                 except pandas:
                     print('The table {} is corrupted. '
@@ -125,7 +132,7 @@ class SQLiteLoad:
         conn.close()
 
     def load_wrapper(self):
-        # Wrapps loads from different files types
+        """Wrapps loads from different files types"""
         for file in self.files_to_load:
             try:
                 print('The file\'s {} loading has started.'
@@ -139,7 +146,8 @@ class SQLiteLoad:
                 print('========================================'
                       '========================================')
 
-        self.db_conn.close() # TODO: remove after refactoring
+        # TODO: remove after refactoring
+        self.db_conn.close()
 
 
 if __name__ == '__main__':

@@ -11,11 +11,10 @@ class KaggleExtract:
     """Kaggle exporter class based on official Kaggle API."""
     MAX_DATASET_SIZE = 150*1024*1024
     VALID_FILE_TYPES = ['csv', 'json', 'sqlite']
-    DOWNLOAD_DIR = '../dataset'
-    # os.path.abspath(os.curdir) + '\\dataset'
+    # DOWNLOAD_DIR = '../dataset'
 
     def __init__(self,
-                 download_dir,
+                 dataset_dir,
                  dataset_name=None,
                  file_type=None
                  ):
@@ -27,7 +26,7 @@ class KaggleExtract:
         # authentication
         self.authenticate()
         # attributes set
-        self.download_dir = download_dir
+        self.dataset_dir = dataset_dir
         self.set_file_type(file_type)
         self.set_dataset_name(dataset_name)
 
@@ -45,9 +44,9 @@ class KaggleExtract:
         except OSError as o:
             print(o.args[0])
 
-    def delete_download_dir(self):
+    def delete_dataset_dir(self):
         """Deletion of the download directory."""
-        send2trash.send2trash(self.download_dir)
+        send2trash.send2trash(self.dataset_dir)
 
     def download_dataset(self):
         """Calls Kaggle API dataset_download_files method.
@@ -58,8 +57,11 @@ class KaggleExtract:
 
         self.api.dataset_download_files(
             dataset=self.dataset_name,
-            path=self.download_dir + '/' + self.dataset_name,
+            path=self.dataset_dir + '/' + self.dataset_name,
             unzip=True)
+
+    def get_dataset_name(self):
+        return self.dataset_name
 
     def set_dataset_name(self, dataset_name):
         """Dataset's name setter.
@@ -118,5 +120,7 @@ if __name__ == '__main__':
                           '(Note: there might be files '
                           'with other types in the dataset): ')
 
-    exp = KaggleExtract(dataset_name=dataset, file_type=file_type)
+    exp = KaggleExtract(dataset_name=dataset,
+                        file_type=file_type,
+                        dataset_dir='../dataset')
     exp.download_dataset()

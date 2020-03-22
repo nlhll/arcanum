@@ -4,6 +4,7 @@ from sqliteLoad import SQLiteLoad
 
 DB_DIR = '..\\database'
 DATASET_DIR = '..\\dataset'
+file_type = None
 dataset = input('Input dataset suffix '
                 '(Dataset URL suffix in format <owner>/<dataset-name>): ')
 if not dataset:
@@ -21,5 +22,5 @@ dataset_path = DATASET_DIR + '/' + dataset_name
 loader = SQLiteLoad(dataset_dir=dataset_path, db_dir=DB_DIR)
 loader.load_wrapper()
 
-# extractor.delete_dataset_dir()
-# loader.delete_db_dir()
+extractor.delete_dataset_dir()
+loader.delete_db_dir()

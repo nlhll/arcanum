@@ -1,4 +1,6 @@
 from kaggle.api.kaggle_api_extended import KaggleApi
+import logging
+from loggingConfig import LoggingConfig
 import random
 import send2trash
 
@@ -11,7 +13,9 @@ class KaggleExtract:
     """Kaggle exporter class based on official Kaggle API."""
     MAX_DATASET_SIZE = 150*1024*1024
     VALID_FILE_TYPES = ['csv', 'json', 'sqlite']
-    # DOWNLOAD_DIR = '../dataset'
+
+    LoggingConfig(__name__)
+    LOGGER = logging.getLogger(__name__)
 
     def __init__(self,
                  dataset_dir,
@@ -27,7 +31,8 @@ class KaggleExtract:
         self.authenticate()
         # attributes set
         self.dataset_dir = dataset_dir
-        self.set_file_type(file_type)
+        if not dataset_name:
+            self.set_file_type(file_type)
         self.set_dataset_name(dataset_name)
 
     def authenticate(self):
@@ -42,7 +47,7 @@ class KaggleExtract:
             self.api = KaggleApi()
             self.api.authenticate()
         except OSError as o:
-            print(o.args[0])
+            self.LOGGER.error(o.args[0])
 
     def delete_dataset_dir(self):
         """Deletion of the download directory."""
@@ -54,11 +59,18 @@ class KaggleExtract:
         Downloads dataset from kaggle's vault.
         """
         # print(api.dataset_list_files('sobhanmoosavi/us-accidents').files)
-
-        self.api.dataset_download_files(
-            dataset=self.dataset_name,
-            path=self.dataset_dir + '/' + self.dataset_name,
-            unzip=True)
+        self.LOGGER.info('A download of ' + self.dataset_name +
+                         ' dataset has started.')
+        try:
+            self.api.dataset_download_files(
+                dataset=self.dataset_name,
+                path=self.dataset_dir + '/' + self.dataset_name,
+                unzip=True)
+            self.LOGGER.info('The [' + self.dataset_name +
+                             '] dataset has been downloaded.')
+        except Exception:
+            self.LOGGER.error('The download of [' + self.dataset_name +
+                              '] dataset has failed')
 
     def get_dataset_name(self):
         return self.dataset_name
@@ -102,19 +114,27 @@ class KaggleExtract:
     def validate_file_type(self, file_type):
         """Validates file's extension."""
         if file_type not in self.VALID_FILE_TYPES:
-            raise ValueError('Incorrect file extension has been entered.')
+            self.LOGGER.error('Incorrect file extension has been entered.')
+            raise ValueError
 
     def validate_dataset_exist(self, dataset_name):
         """Validates dataset's existence."""
-        search_res = str(self.api.dataset_list(search=dataset_name))
-
-        if search_res != '[' + dataset_name + ']':
-            raise ValueError('Incorrect dataset name has been entered.')
+        try:
+            search_res = str(self.api.dataset_list(search=dataset_name))
+            try:
+                if search_res != '[' + dataset_name + ']':
+                    raise ValueError
+            except ValueError:
+                self.LOGGER.error('Incorrect dataset name has been entered.')
+        except Exception:
+            self.LOGGER.warning('Something went wrong in retrieving '
+                                'Kaggle API dataset list')
 
 
 if __name__ == '__main__':
     dataset = input('Input dataset name '
                     '(Dataset URL suffix in format <owner>/<dataset-name>): ')
+    file_type = None
     if not dataset:
         file_type = input('Input primal files\' type: csv, json, sqlite. '
                           '(Note: there might be files '

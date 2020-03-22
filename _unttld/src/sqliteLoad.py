@@ -1,4 +1,6 @@
 import json
+import logging
+from loggingConfig import LoggingConfig
 import pandas
 from pathlib import Path
 import send2trash
@@ -16,6 +18,9 @@ class SQLiteLoad:
     # DB_DIR = '..\\database'
     # DATASET_DIR = '..\\dataset'
     DB_NAME = 'db'
+
+    LoggingConfig(__name__)
+    LOGGER = logging.getLogger(__name__)
 
     # FILE_PATH = 'D:/work/arcanum/_unttld/dataset/ISO_TC 213.csv'
 
@@ -70,16 +75,14 @@ class SQLiteLoad:
             csv_conn = pandas.read_csv(file['path'])
             csv_conn.to_sql(table_name, db_conn,
                             if_exists='replace', index=False)
+            self.LOGGER.info('The file {} has been loaded.'
+                             .format(file['name'] + file['type']))
         except pandas:
-            print('The file {} is corrupted. the loading has been skipped.'
-                  .format(file['name']))
-            print('========================================'
-                  '========================================')
-        else:
-            print('The file {} has been loaded.'
-                  .format(file['name'] + file['type']))
-            print('========================================'
-                  '========================================')
+            self.LOGGER.error('The file {} is corrupted.'
+                              'The loading has been skipped.'
+                              .format(file['name']))
+            # print('========================================
+            # ========================================')
 
         db_conn.commit()
         db_conn.close()
@@ -102,17 +105,11 @@ class SQLiteLoad:
 
             cur.execute('INSERT INTO ' + table_name + ' VALUES(?)',
                         [str(json_data)])
-
-        except all():
-            print('The file {} hasn\'t been loaded succesfully.'
-                  .format(file['name']))
-            print('========================================'
-                  '========================================')
-        else:
-            print('The file {} has been loaded succesfully.'
-                  .format(file['name'] + file['type']))
-            print('========================================'
-                  '========================================')
+            self.LOGGER.info('The file {} has been loaded succesfully.'
+                             .format(file['name'] + file['type']))
+        except Exception:
+            self.LOGGER.error('The file {} hasn\'t been loaded succesfully.'
+                              .format(file['name']))
 
         db_conn.commit()
         db_conn.close()
@@ -135,25 +132,18 @@ class SQLiteLoad:
                                                   % table_name, conn)
                     table.to_sql(table_name, db_conn,
                                  if_exists='replace', index=False)
+                    self.LOGGER.info('The table {} has been loaded.'
+                                     .format(table_name))
                 except pandas:
-                    print('The table {} is corrupted. '
-                          'The loading has been skipped.'.format(table_name))
-                    print('========================================'
-                          '========================================')
-                else:
-                    print('The table {} has been loaded.'.format(table_name))
-                    print('========================================'
-                          '========================================')
-        except all():
-            print('The file {} hasn\'t been loaded succesfully'
-                  .format(file['name']))
-            print('========================================'
-                  '========================================')
-        else:
-            print('The file {} has been loaded.'
-                  .format(file['name'] + file['type']))
-            print('========================================'
-                  '========================================')
+                    self.LOGGER.error('The table {} is corrupted.'
+                                      'The loading has been skipped.'
+                                      .format(table_name))
+
+            self.LOGGER.info('The file {} has been loaded.'
+                             .format(file['name'] + file['type']))
+        except Exception:
+            self.LOGGER.error('The file {} hasn\'t been loaded succesfully'
+                              .format(file['name']))
 
         cursor.close()
         conn.close()
@@ -164,16 +154,12 @@ class SQLiteLoad:
         """Wrapps loads from different files types"""
         for file in self.files_to_load:
             try:
-                print('The file\'s {} loading has started.'
-                      .format(file['name'] + file['type']))
-                print('========================================'
-                      '========================================')
+                self.LOGGER.info('The {} file loading has started.'
+                                 .format(file['name'] + file['type']))
                 self.load_call[file['type']](file)
             except KeyError:
-                print('The file with {} extension has been skipped'
-                      .format(file['type']))
-                print('========================================'
-                      '========================================')
+                self.LOGGER.error('The file with {} extension has been skipped'
+                                  .format(file['type']))
 
 
 if __name__ == '__main__':

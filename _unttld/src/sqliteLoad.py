@@ -6,7 +6,7 @@ from pathlib import Path
 import send2trash
 import sqlite3
 
-# TODO: logging (console, file)
+# TODO: logging (console, file) =========DONE
 # TODO: decouple logic from Extract (dataset dir, etc.) =========DONE
 # TODO: json loader =========DONE
 # TODO: docstrings =========DONE

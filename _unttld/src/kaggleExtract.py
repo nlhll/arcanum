@@ -4,7 +4,7 @@ from loggingConfig import LoggingConfig
 import random
 import send2trash
 
-# TODO: logging (console, file)
+# TODO: logging (console, file) =========DONE
 # TODO: add subdirectory per dataset extracted =========DONE
 # TODO: docstrings =========DONE
 
@@ -59,8 +59,8 @@ class KaggleExtract:
         Downloads dataset from kaggle's vault.
         """
         # print(api.dataset_list_files('sobhanmoosavi/us-accidents').files)
-        self.LOGGER.info('A download of ' + self.dataset_name +
-                         ' dataset has started.')
+        self.LOGGER.info('A download of [' + self.dataset_name +
+                         '] dataset has started.')
         try:
             self.api.dataset_download_files(
                 dataset=self.dataset_name,

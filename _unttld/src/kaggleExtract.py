@@ -31,9 +31,7 @@ class KaggleExtract:
         self.authenticate()
         # attributes set
         self.dataset_dir = dataset_dir
-        if not dataset_name:
-            self.set_file_type(file_type)
-        self.set_dataset_name(dataset_name)
+        self.set_dataset_name(dataset_name, file_type)
 
     def authenticate(self):
         """
@@ -75,7 +73,7 @@ class KaggleExtract:
     def get_dataset_name(self):
         return self.dataset_name
 
-    def set_dataset_name(self, dataset_name):
+    def set_dataset_name(self, dataset_name, file_type):
         """Dataset's name setter.
 
         Calls dataset's existence validation.
@@ -89,15 +87,16 @@ class KaggleExtract:
         else:
             page = random.randint(1, 2)
             index = random.randint(1, 19)
+            true_file_type = self.form_file_type(file_type)
 
             self.dataset_name = str(self.api.
-                                    dataset_list(file_type=self.file_type,
+                                    dataset_list(file_type=true_file_type,
                                                  page=page,
                                                  max_size=self.MAX_DATASET_SIZE
                                                  )[index]
                                     )
 
-    def set_file_type(self, file_type):
+    def form_file_type(self, file_type):
         """Dataset's file extension setter.
 
          Calls file's extension validation.
@@ -107,9 +106,10 @@ class KaggleExtract:
          """
         if file_type:
             self.validate_file_type(file_type)
-            self.file_type = file_type
+            true_file_type = file_type
         else:
-            self.file_type = self.VALID_FILE_TYPES[random.randint(0, 2)]
+            true_file_type = self.VALID_FILE_TYPES[random.randint(0, 2)]
+        return true_file_type
 
     def validate_file_type(self, file_type):
         """Validates file's extension."""
